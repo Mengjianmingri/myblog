@@ -1,183 +1,90 @@
-CREATE TABLE `rxz_users` (
-
-                            `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-
-                            `user_ip` varchar(20) NOT NULL COMMENT '用户IP',
-
-                            `user_name` varchar(20) NOT NULL COMMENT '用户名',
-
-                            `user_password` varchar(15) NOT NULL COMMENT '用户密码',
-
-                            `user_email` varchar(30) NOT NULL COMMENT '用户邮箱',
-
-                            `user_profile_photo` varchar(255) NOT NULL COMMENT '用户头像',
-
-                            `user_registration_time` datetime DEFAULT NULL COMMENT '注册时间',
-
-                            `user_birthday` date DEFAULT NULL COMMENT '用户生日',
-
-                            `user_age` tinyint(4) DEFAULT NULL COMMENT '用户年龄',
-
-                            `user_telephone_number` int(11) NOT NULL COMMENT '用户手机号',
-
-                            `user_nickname` varchar(20) NOT NULL COMMENT '用户昵称',
-
-                            PRIMARY KEY (`user_id`),
-
-                            KEY `user_name` (`user_name`),
-
-                            KEY `user_nickname` (`user_nickname`),
-
-                            KEY `user_email` (`user_email`),
-
-                            KEY `user_telephone_number` (`user_telephone_number`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_articles` (
-
-                               `article_id` bigint(255) NOT NULL AUTO_INCREMENT COMMENT '博文ID',
-
-                               `user_id` bigint(20) NOT NULL COMMENT '发表用户ID',
-
-                               `article_title` text NOT NULL COMMENT '博文标题',
-
-                               `article_content` longtext NOT NULL COMMENT '博文内容',
-
-                               `article_views` bigint(20) NOT NULL COMMENT '浏览量',
-
-                               `article_comment_count` bigint(20) NOT NULL COMMENT '评论总数',
-
-                               `article_date` datetime DEFAULT NULL COMMENT '发表时间',
-
-                               `article_like_count` bigint(20) NOT NULL,
-
-                               PRIMARY KEY (`article_id`),
-
-                               KEY `user_id` (`user_id`),
-
-                               CONSTRAINT `rxz_articles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `rxz_users` (`user_id`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_comments` (
-
-                               `comment_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '评论ID',
-
-                               `user_id` bigint(20) NOT NULL COMMENT '发表用户ID',
-
-                               `article_id` bigint(20) NOT NULL COMMENT '评论博文ID',
-
-                               `comment_like_count` bigint(20) NOT NULL COMMENT '点赞数',
-
-                               `comment_date` datetime DEFAULT NULL COMMENT '评论日期',
-
-                               `comment_content` text NOT NULL COMMENT '评论内容',
-
-                               `parent_comment_id` bigint(20) NOT NULL COMMENT '父评论ID',
-
-                               PRIMARY KEY (`comment_id`),
-
-                               KEY `article_id` (`article_id`),
-
-                               KEY `comment_date` (`comment_date`),
-
-                               KEY `parent_comment_id` (`parent_comment_id`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_labels` (
-
-                             `label_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '标签ID',
-
-                             `label_name` varchar(20) NOT NULL COMMENT '标签名称',
-
-                             `label_alias` varchar(15) NOT NULL COMMENT '标签别名',
-
-                             `label_description` text NOT NULL COMMENT '标签描述',
-
-                             PRIMARY KEY (`label_id`),
-
-                             KEY `label_name` (`label_name`),
-
-                             KEY `label_alias` (`label_alias`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_set_artitle_label` (
-
-                                        `article_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '文章ID',
-
-                                        `label_id` bigint(20) NOT NULL,
-
-                                        PRIMARY KEY (`article_id`),
-
-                                        KEY `label_id` (`label_id`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_set_artitle_sort` (
-
-                                       `article_id` bigint(20) NOT NULL COMMENT '文章ID',
-
-                                       `sort_id` bigint(20) NOT NULL COMMENT '分类ID',
-
-                                       PRIMARY KEY (`article_id`,`sort_id`),
-
-                                       KEY `sort_id` (`sort_id`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_sorts` (
-
-                            `sort_id` bigint(20) NOT NULL COMMENT '分类ID',
-
-                            `sort_name` varchar(50) NOT NULL COMMENT '分类名称',
-
-                            `sort_alias` varchar(15) NOT NULL COMMENT '分类别名',
-
-                            `sort_description` text NOT NULL COMMENT '分类描述',
-
-                            `parent_sort_id` bigint(20) NOT NULL COMMENT '父分类ID',
-
-                            PRIMARY KEY (`sort_id`),
-
-                            KEY `sort_name` (`sort_name`),
-
-                            KEY `sort_alias` (`sort_alias`)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `rxz_user_friends` (
-
-                                   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '标识ID',
-
-                                   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
-
-                                   `user_friends_id` bigint(20) NOT NULL COMMENT '好友ID',
-
-                                   `user_note` varchar(20) NOT NULL COMMENT '好友备注',
-
-                                   `user_status` varchar(20) NOT NULL COMMENT '好友状态',
-
-                                   PRIMARY KEY (`id`),
-
-                                   KEY `user_id` (`user_id`)
-
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-CREATE VIEW Friends
-AS
-SELECT
-    rxz_user_friends.user_id AS user_id,
-    rxz_users.user_name AS user_name,
-    rxz_user_friends.user_friends_id AS user_friends_id,
-    rxz_user_friends.user_note AS user_note
-FROM
-    (
-     rxz_users
-        JOIN rxz_user_friends
-        )
-WHERE
-    (
-            rxz_users.user_id = rxz_user_friends.user_id
-        ) ;
+DROP TABLE rxz_article;;/*SkipError*/
+CREATE TABLE rxz_article(
+                            id INT(10) NOT NULL AUTO_INCREMENT  COMMENT '文章表' ,
+                            article_categoryID INT(10) NOT NULL   COMMENT '文章分类' ,
+                            article_title VARCHAR(128) NOT NULL   COMMENT '文章标题' ,
+                            article_context VARCHAR(1024) NOT NULL   COMMENT '文章内容' ,
+                            article_publish DATE NOT NULL   COMMENT '文章发表时间' ,
+                            article_info VARCHAR(128)    COMMENT '文章简介' ,
+                            article_clicked INT(10) NOT NULL   COMMENT '文章阅读次数' ,
+                            article_authorID INT NOT NULL   COMMENT '文章作者' ,
+                            PRIMARY KEY (id)
+) COMMENT = '文章表 ';;
+
+ALTER TABLE rxz_article COMMENT '文章表';;
+CREATE TABLE rxz_articleCategory(
+                                    id INT NOT NULL AUTO_INCREMENT  COMMENT '文章分类表主键' ,
+                                    category_name VARCHAR(32) NOT NULL   COMMENT '分类名称' ,
+                                    category_info VARCHAR(128)    COMMENT '此分类描述' ,
+                                    PRIMARY KEY (id)
+) COMMENT = '文章分类表 ';;
+
+ALTER TABLE rxz_articleCategory COMMENT '文章分类表';;
+CREATE TABLE rxz_friends(
+                            id INT NOT NULL AUTO_INCREMENT  COMMENT '好友表主键' ,
+                            author_id INT NOT NULL   COMMENT '作者id' ,
+                            friend_id INT NOT NULL   COMMENT '好友id' ,
+                            info VARCHAR(128)    COMMENT '备注' ,
+                            PRIMARY KEY (id)
+) COMMENT = '好友数据表 ';;
+
+ALTER TABLE rxz_friends COMMENT '好友数据表';;
+DROP TABLE rxz_images;;/*SkipError*/
+CREATE TABLE rxz_images(
+                           id INT NOT NULL AUTO_INCREMENT  COMMENT '图片表主键' ,
+                           addr VARCHAR(1024) NOT NULL   COMMENT '图片路径' ,
+                           upload_date DATE NOT NULL   COMMENT '上传日期' ,
+                           upload_userId INT NOT NULL   COMMENT '上传者' ,
+                           info VARCHAR(32)    COMMENT '描述' ,
+                           PRIMARY KEY (id)
+) COMMENT = '图片信息表 ';;
+
+ALTER TABLE rxz_images COMMENT '图片信息表';;
+DROP TABLE rxz_user;;/*SkipError*/
+CREATE TABLE rxz_user(
+                         id INT NOT NULL AUTO_INCREMENT  COMMENT '用户id' ,
+                         usernamre VARCHAR(32) NOT NULL   COMMENT '用户名' ,
+                         sex INT NOT NULL   COMMENT '性别' ,
+                         PRIMARY KEY (id,usernamre)
+) COMMENT = '用户表 ';;
+
+ALTER TABLE rxz_user COMMENT '用户表';;
+DROP TABLE rxz_review;;/*SkipError*/
+CREATE TABLE rxz_review(
+                           id INT NOT NULL AUTO_INCREMENT  COMMENT '评论主键' ,
+                           article_id INT NOT NULL   COMMENT '被评论的文章id' ,
+                           speaker_id INT NOT NULL   COMMENT '当前评论发布者' ,
+                           preSpeaker_id INT NOT NULL   COMMENT '当前评论对象id' ,
+                           context VARCHAR(1024) NOT NULL   COMMENT '评论内容' ,
+                           review_time DATE NOT NULL   COMMENT '评论发布时间' ,
+                           PRIMARY KEY (id)
+) COMMENT = '评论表 ';;
+
+ALTER TABLE rxz_review COMMENT '评论表';;
+
+
+ALTER TABLE rxz_images
+    ADD FOREIGN KEY (upload_userId)
+        REFERENCES rxz_user(id);
+ALTER TABLE rxz_friends
+    ADD FOREIGN KEY (author_id)
+        REFERENCES rxz_user(id);
+ALTER TABLE rxz_friends
+    ADD FOREIGN KEY (friend_id)
+        REFERENCES rxz_user(id);
+ALTER TABLE rxz_review
+    ADD FOREIGN KEY (speaker_id)
+        REFERENCES rxz_user(id);
+ALTER TABLE rxz_review
+    ADD FOREIGN KEY (preSpeaker_id)
+        REFERENCES rxz_user(id);
+ALTER TABLE rxz_review
+    ADD FOREIGN KEY (article_id)
+        REFERENCES rxz_article(id);
+ALTER TABLE rxz_article
+    ADD FOREIGN KEY (article_authorID)
+        REFERENCES rxz_user(id);
+ALTER TABLE rxz_article
+    ADD FOREIGN KEY (article_categoryID)
+        REFERENCES rxz_articleCategory(id);
+insert into rxz_articleCategory values (1,'文学','包括古典、现代、外国文学');
